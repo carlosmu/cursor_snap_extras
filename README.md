@@ -12,3 +12,7 @@ Snap active bone location and rotation from/to cursor. Support Quaternion and Eu
 
 <br>
 <img src="img/cse_menu_options.jpg">
+
+## To-Do
+- Change local transforms to global
+- Add support for Object and Edit Mode
