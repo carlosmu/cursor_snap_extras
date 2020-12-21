@@ -16,7 +16,7 @@ bl_info = {
     "name" : "Cursor Snap Extras",
     "author" : "carlosmu <carlos.damian.munoz@gmail.com>",    
     "blender" : (2, 83, 0),
-    "version" : (0, 1, 0),
+    "version" : (0, 2, 0),
     "category" : "Animation",
     "location" : "Pose Context Menu",
     "description" : "Snap Location and Rotation from/to 3d Cursor.",
@@ -33,7 +33,7 @@ import bpy
 class CSE_OT_active_bone_to_cursor(bpy.types.Operator):
     """Active Bone Location/Rotation to cursor"""
     bl_idname = "cse.active_bone_to_cursor"
-    bl_label = "Active Bone to Cursor"
+    bl_label = "Active Bone to Cursor (Loc/Rot)"
 
     # Only appears on 3D VIEW
     @classmethod
@@ -54,12 +54,36 @@ class CSE_OT_active_bone_to_cursor(bpy.types.Operator):
         return{'FINISHED'}
 
 #########################################
+# Operator: Active Bone to Cursor       #
+#########################################
+class CSE_OT_active_bone_rotation_to_cursor(bpy.types.Operator):
+    """Active Bone (Only Rotation) to cursor"""
+    bl_idname = "cse.active_bone_rotation_to_cursor"
+    bl_label = "Active Bone to Cursor (Rot)"
+
+    # Only appears on 3D VIEW
+    @classmethod
+    def poll(cls, context):
+        return context.area.ui_type == 'VIEW_3D'
+    
+    def execute(self, context):        
+        # Variables
+        cursor = bpy.context.scene.cursor
+        bone_active = bpy.context.active_pose_bone
+        # Rotate active bone to cursor rotation (Quaternion or Euler)
+        if bone_active.rotation_mode == 'QUATERNION':
+            bone_active.rotation_quaternion = cursor.rotation_euler.to_quaternion()
+        else:
+            bone_active.rotation_euler = cursor.rotation_euler
+        return{'FINISHED'}
+
+#########################################
 # Operator: Cursor to Active Bone       #
 #########################################
 class CSE_OT_cursor_to_active_bone(bpy.types.Operator):
     """Cursor Location/Rotation to active bone"""
     bl_idname = "cse.cursor_to_active_bone"
-    bl_label = "Cursor to Active Bone"
+    bl_label = "Cursor to Active Bone (Loc/Rot)"
 
     # Only appears on 3D VIEW
     @classmethod
@@ -86,8 +110,9 @@ def draw_extra_pose_menues(self, context):
     layout = self.layout
     # Menu elements on selected pose bones
     if context.selected_pose_bones:
-        layout.operator("cse.active_bone_to_cursor",icon='RESTRICT_SELECT_OFF') # Set Selected Loc/Rot to
         layout.operator("cse.cursor_to_active_bone",icon='CURSOR') # Set Cursor Loc/Rot to selected
+        layout.operator("cse.active_bone_to_cursor",icon='RESTRICT_SELECT_OFF') # Set Selected Loc/Rot to
+        layout.operator("cse.active_bone_rotation_to_cursor",icon='RESTRICT_SELECT_OFF') # Set Selected Loc/Rot to
         # Separator
         layout.separator()
 
@@ -95,11 +120,13 @@ def draw_extra_pose_menues(self, context):
 # Register/Unregister    #
 ##########################
 def register():
+    bpy.utils.register_class(CSE_OT_active_bone_rotation_to_cursor)
     bpy.utils.register_class(CSE_OT_active_bone_to_cursor)
     bpy.utils.register_class(CSE_OT_cursor_to_active_bone)    
     bpy.types.VIEW3D_MT_pose_context_menu.prepend(draw_extra_pose_menues) 
         
 def unregister():
+    bpy.utils.unregister_class(CSE_OT_active_bone_rotation_to_cursor)
     bpy.utils.unregister_class(CSE_OT_active_bone_to_cursor)
     bpy.utils.unregister_class(CSE_OT_cursor_to_active_bone)
     bpy.types.VIEW3D_MT_pose_context_menu.remove(draw_extra_pose_menues)
