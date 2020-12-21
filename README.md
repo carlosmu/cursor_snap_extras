@@ -1,5 +1,6 @@
-# cursor_snap_animation_utils
-Blender Addon. Snap Loc/Rot from selected bone to cursor and from the cursor to bone.
+# cursor_snap_extras
+
+Blender Addon. Snap active bone location and rotation from/to cursor. Support Quaternion and Euler.
 
 <br>
-<img src="img/csau_menu_options.jpg">
+<img src="img/cse_menu_options.jpg">
