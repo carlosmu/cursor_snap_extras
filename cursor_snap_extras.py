@@ -15,7 +15,7 @@
 bl_info = {
     "name" : "Cursor Snap Extras",
     "author" : "carlosmu <carlos.damian.munoz@gmail.com>",    
-    "blender" : (2, 91, 0),
+    "blender" : (2, 83, 0),
     "version" : (0, 1, 0),
     "category" : "Animation",
     "location" : "Pose Context Menu",
